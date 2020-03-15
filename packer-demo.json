@@ -1,0 +1,36 @@
+{
+    "variables": {
+      "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+      "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}"
+    },
+    "builders": [
+      {
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "us-east-1",
+        "source_ami": "ami-07ebfd5b3428b6f4d",
+        "instance_type": "t2.micro",
+        "ssh_username": "ubuntu",
+        "ami_name": "newrelic-ami"
+      }
+    ],
+    "provisioners": [
+      {
+          "type": "file",
+          "source": "./packer.txt",
+          "destination": "/home/ubuntu/"
+      },
+      {
+          "type": "shell",
+          "inline":[
+              "ls -al /home/ubuntu",
+              "cat /home/ubuntu/packer.txt"
+          ]
+      },
+      {
+          "type": "shell",
+          "script": "./newrelic-install.sh"
+      }
+  ]
+  }
